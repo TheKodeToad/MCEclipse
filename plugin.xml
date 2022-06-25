@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="io.github.thekodetoad.mceclipse.category"
+            name="Minecraft">
+      </category>
+      <wizard
+            category="io.github.thekodetoad.mceclipse.category"
+            class="io.github.thekodetoad.mceclipse.paper.wizards.PaperPluginWizard"
+            icon="icons/paper.png"
+            id="io.github.thekodetoad.mceclipse.wizards.paper_plugin"
+            name="Paper Plugin"
+            project="true">
+      </wizard>
+   </extension>
+
+</plugin>

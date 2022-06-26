@@ -1,4 +1,4 @@
-package io.github.thekodetoad.mceclipse;
+package io.github.thekodetoad.mceclipse.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

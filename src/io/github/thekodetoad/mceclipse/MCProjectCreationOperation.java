@@ -24,6 +24,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.undo.CreateProjectOperation;
 import org.eclipse.ui.ide.undo.WorkspaceUndoUtil;
 
+import io.github.thekodetoad.mceclipse.util.Util;
+
 // based off https://github.com/JetBrains/kotlin-eclipse/blob/master/kotlin-eclipse-ui/src/org/jetbrains/kotlin/wizards/ProjectCreationOp.java
 public class MCProjectCreationOperation implements IRunnableWithProgress {
 

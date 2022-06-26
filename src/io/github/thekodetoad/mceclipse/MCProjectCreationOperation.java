@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.undo.CreateProjectOperation;
 import org.eclipse.ui.ide.undo.WorkspaceUndoUtil;
@@ -36,13 +37,16 @@ public class MCProjectCreationOperation implements IRunnableWithProgress {
 	protected static final String POM = "pom.xml";
 	protected static final String CLASSPATH = ".classpath";
 
-	private final IProjectDescription desc;
-	private final String name;
+	protected final IWorkbench workbench;
+	protected final IProjectDescription desc;
+	protected final String name;
 	protected final Model model;
-	private final Shell shell;
+	protected final Shell shell;
 	protected Result result;
 
-	public MCProjectCreationOperation(boolean useLocation, IPath location, String name, Model model, Shell shell) {
+	public MCProjectCreationOperation(IWorkbench workbench, boolean useLocation, IPath location, String name, Model model, Shell shell) {
+		this.workbench = workbench;
+
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 
 		desc = workspace.newProjectDescription(name);

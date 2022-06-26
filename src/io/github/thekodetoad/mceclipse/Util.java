@@ -6,12 +6,18 @@ import java.util.Map;
 
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ProjectScope;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.core.runtime.preferences.IScopeContext;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jdt.core.ToolFactory;
+import org.eclipse.jdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
+import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
@@ -34,11 +40,14 @@ public class Util {
 		return out.toByteArray();
 	}
 
-	public static String format(int kind, String source, Map<String, String> options, int indentationLevel, String lineSeparator) {
+	public static String format(String source, int kind, Map<String, String> options, int indentationLevel,
+			String lineSeparator) {
 		TextEdit edit = ToolFactory.createCodeFormatter(options).format(kind, source, 0, source.length(), indentationLevel, lineSeparator);
 		Document document = new Document(source);
 		try {
-			edit.apply(document);
+			if(edit != null) {
+				edit.apply(document);
+			}
 		}
 		catch(BadLocationException error) {
 			Util.LOG.error("Error formatting", error);
@@ -46,8 +55,31 @@ public class Util {
 		return document.get();
 	}
 
-	public static String getLineBreak(IJavaProject project) {
-		return project.getOptions(true).getOrDefault("", System.getProperty(ID));
+	public static String applyImports(String source, ImportRewrite imports) throws CoreException {
+		Document document = new Document(source);
+		try {
+			imports.rewriteImports(null).apply(document);
+		}
+		catch(BadLocationException | MalformedTreeException error) {
+			Util.LOG.error("Error applying imports", error);
+		}
+		return document.get();
+	}
+
+	public static String formatAndApplyImports(String source, int kind, Map<String, String> options,
+			int indentationLevel, String lineSeparator, ImportRewrite imports) throws CoreException {
+		source = format(source, kind, options, indentationLevel, lineSeparator);
+		source = applyImports(source, imports);
+		return source;
+	}
+
+	public static String getLineBreak(IProject project) {
+		return Platform.getPreferencesService().getString(Platform.PI_RUNTIME, Platform.PREF_LINE_SEPARATOR,
+				System.getProperty("line.separator", "\n"), projectContext(project));
+	}
+
+	private static IScopeContext[] projectContext(IProject project) {
+		return new IScopeContext[] { new ProjectScope(project), InstanceScope.INSTANCE };
 	}
 
 }

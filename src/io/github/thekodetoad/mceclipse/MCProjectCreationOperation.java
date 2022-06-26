@@ -79,7 +79,6 @@ public class MCProjectCreationOperation implements IRunnableWithProgress {
 			postCreate(monitor);
 		}
 		catch(ExecutionException | CoreException | IOException error) {
-			error.printStackTrace();
 			result = new Result(null, error);
 		}
 	}

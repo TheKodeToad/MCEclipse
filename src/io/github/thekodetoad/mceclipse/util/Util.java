@@ -21,18 +21,25 @@ import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.DumperOptions.FlowStyle;
 
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class Util {
 
-	public static final String MAVEN_BUILDER_ID = "org.eclipse.m2e.core.maven2Builder";
-	public static final String MAVEN_NATURE_ID = "org.eclipse.m2e.core.maven2Nature";
+	public final String MAVEN_BUILDER_ID = "org.eclipse.m2e.core.maven2Builder";
+	public final String MAVEN_NATURE_ID = "org.eclipse.m2e.core.maven2Nature";
+	public final DumperOptions DUMPER_SETTINGS = new DumperOptions();
 	private final MavenXpp3Writer MAVEN_WRITER = new MavenXpp3Writer();
 	public final Bundle BUNDLE = FrameworkUtil.getBundle(Util.class);
 	public final String ID = BUNDLE.getSymbolicName();
 	public final ILog LOG = Platform.getLog(BUNDLE);
+
+	static {
+		DUMPER_SETTINGS.setDefaultFlowStyle(FlowStyle.BLOCK);
+	}
 
 	public static byte[] modelToByteArray(Model model) throws IOException {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();

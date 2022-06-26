@@ -12,6 +12,8 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 
+import io.github.thekodetoad.mceclipse.util.Util;
+
 public class PaperPluginWizard extends Wizard implements IWorkbenchWizard {
 
 	private IWorkbench workbench;
@@ -57,8 +59,9 @@ public class PaperPluginWizard extends Wizard implements IWorkbenchWizard {
 				projectPage.getLocationPath(), projectPage.getProjectName(), paperPage.createModel(), getShell(), paperPage.getMainClass());
 		try {
 			getContainer().run(true, true, operation);
-		} catch (InvocationTargetException | InterruptedException e) {
-			e.printStackTrace();
+		}
+		catch(InvocationTargetException | InterruptedException error) {
+			Util.LOG.error("Could not create Paper plugin", error);
 		}
 		return true;
 	}

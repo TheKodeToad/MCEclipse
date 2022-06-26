@@ -22,4 +22,5 @@ Import-Package: javax.annotation;version="1.2.0"
 Automatic-Module-Name: io.github.thekodetoad.mceclipse
 Bundle-ClassPath: .,
  libs/maven-model-3.8.6.jar,
- libs/plexus-utils-3.4.2.jar
+ libs/plexus-utils-3.4.2.jar,
+ libs/snakeyaml-1.30.jar

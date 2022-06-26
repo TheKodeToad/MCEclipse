@@ -1,9 +1,16 @@
 package io.github.thekodetoad.mceclipse.paper.wizards;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.Modifier;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
 
 import org.apache.maven.model.Model;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -25,6 +32,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
+import org.yaml.snakeyaml.Yaml;
 
 import io.github.thekodetoad.mceclipse.MCProjectCreationOperation;
 import io.github.thekodetoad.mceclipse.util.MethodImpl;
@@ -32,6 +40,8 @@ import io.github.thekodetoad.mceclipse.util.TypeImpl;
 import io.github.thekodetoad.mceclipse.util.Util;
 
 public class PaperProjectCreationOperation extends MCProjectCreationOperation {
+
+	private static final String PLUGIN_YML = MAIN_RESOURCES + "/plugin.yml";
 
 	private String mainClass;
 
@@ -43,6 +53,11 @@ public class PaperProjectCreationOperation extends MCProjectCreationOperation {
 	@Override
 	protected void postCreate(IProgressMonitor monitor) throws CoreException, IOException {
 		super.postCreate(monitor);
+		createClass(monitor);
+		generateDescription(monitor);
+	}
+
+	private void createClass(IProgressMonitor monitor) throws CoreException {
 		IJavaProject jproject = JavaCore.create(result.project());
 		IPackageFragmentRoot root = jproject.getPackageFragmentRoot(result.project().getFolder(MAIN_JAVA));
 
@@ -72,28 +87,29 @@ public class PaperProjectCreationOperation extends MCProjectCreationOperation {
 		StringBuilder mainContent = new StringBuilder();
 
 		mainContent.append("\n");
-		mainContent.append(CodeGeneration.getTypeComment(mainUnit, mainClass, delimiter));
+		mainContent
+				.append(Optional.ofNullable(CodeGeneration.getTypeComment(mainUnit, mainClass, delimiter)).orElse(""));
 		mainContent.append("public final class ");
 		mainContent.append(className);
 		mainContent.append(" extends ");
 		mainContent.append(imports.addImport("org.bukkit.plugin.java.JavaPlugin"));
 		mainContent.append("{\n\n");
-		mainContent.append(CodeGeneration.getMethodComment(mainUnit, mainClass, "onEnable", new String[0],
-				new String[0], "V",
+		mainContent.append(Optional.ofNullable(CodeGeneration.getMethodComment(mainUnit, mainClass, "onEnable",
+				new String[0], new String[0], "V",
 				new MethodImpl(Modifier.PUBLIC, new TypeImpl(Modifier.PUBLIC, "org.bukkit.plugin.java.JavaPlugin"),
 						"onEnable", new String[0], new String[0], new ITypeParameter[0], new ILocalVariable[0],
 						new String[0], new String[0], "V"),
-				delimiter));
+				delimiter)).orElse(""));
 		mainContent.append("\n@Override\n");
 		mainContent.append("public void onEnable() {\n");
 		mainContent.append("// TODO Plugin startup\n\n");
 		mainContent.append("}\n\n");
-		mainContent.append(CodeGeneration.getMethodComment(mainUnit, mainClass, "onDisable", new String[0],
-				new String[0], "V",
+		mainContent.append(Optional.ofNullable(CodeGeneration.getMethodComment(mainUnit, mainClass, "onDisable",
+				new String[0], new String[0], "V",
 				new MethodImpl(Modifier.PUBLIC, new TypeImpl(Modifier.PUBLIC, "org.bukkit.plugin.java.JavaPlugin"),
 						"onDisable", new String[0], new String[0], new ITypeParameter[0], new ILocalVariable[0],
 						new String[0], new String[0], "V"),
-				delimiter));
+				delimiter)).orElse(""));
 		mainContent.append("\n@Override\n");
 		mainContent.append("public void onDisable() {\n");
 		mainContent.append("// TODO Plugin shutdown\n\n");
@@ -103,7 +119,7 @@ public class PaperProjectCreationOperation extends MCProjectCreationOperation {
 		String mainContentStr = Util.applyImports(mainContent.toString(), imports);
 
 		StringBuilder header = new StringBuilder();
-		header.append(CodeGeneration.getFileComment(mainUnit, "\n"));
+		header.append(Optional.ofNullable(CodeGeneration.getFileComment(mainUnit, "\n")).orElse(""));
 		header.append("\n");
 
 		if(packageName != null) {
@@ -138,6 +154,21 @@ public class PaperProjectCreationOperation extends MCProjectCreationOperation {
 				BasicNewResourceWizard.selectAndReveal(mainUnit.getResource(), workbench.getActiveWorkbenchWindow());
 			});
 		}
+	}
+
+	private void generateDescription(IProgressMonitor monitor) throws CoreException {
+		IFile file = result.project().getFile(PLUGIN_YML);
+		Yaml yaml = new Yaml(Util.DUMPER_SETTINGS);
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+		Map<Object, Object> descMap = new LinkedHashMap<>();
+		descMap.put("name", model.getArtifactId());
+		descMap.put("version", model.getVersion());
+		descMap.put("main", mainClass);
+		descMap.put("api-version", "1.19");
+
+		yaml.dump(descMap, new OutputStreamWriter(output));
+		file.create(new ByteArrayInputStream(output.toByteArray()), false, monitor);
 	}
 
 }

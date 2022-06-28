@@ -47,6 +47,7 @@ import org.eclipse.jdt.core.WorkingCopyOwner;
 
 import lombok.Getter;
 
+@SuppressWarnings("deprecation")
 public record TypeImpl(@Getter int flags, String name) implements IType {
 
 	@Override
@@ -496,7 +497,6 @@ public record TypeImpl(@Getter int flags, String name) implements IType {
 		return null;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public ITypeHierarchy newSupertypeHierarchy(IWorkingCopy[] workingCopies, IProgressMonitor monitor)
 			throws JavaModelException {
@@ -531,7 +531,6 @@ public record TypeImpl(@Getter int flags, String name) implements IType {
 		return null;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public ITypeHierarchy newTypeHierarchy(IWorkingCopy[] workingCopies, IProgressMonitor monitor)
 			throws JavaModelException {

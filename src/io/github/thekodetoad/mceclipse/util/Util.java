@@ -30,8 +30,10 @@ import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.ToolFactory;
 import org.eclipse.jdt.core.dom.rewrite.ImportRewrite;
+import org.eclipse.jdt.core.manipulation.JavaManipulation;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.MalformedTreeException;
@@ -104,6 +106,10 @@ public class Util {
 
 	private static IScopeContext[] projectContext(IProject project) {
 		return new IScopeContext[] { new ProjectScope(project), InstanceScope.INSTANCE };
+	}
+
+	public static boolean shouldGenerateComments(IJavaProject jproject) {
+		return Boolean.parseBoolean(JavaManipulation.getPreference("org.eclipse.jdt.ui.javadoc", jproject));
 	}
 
 }

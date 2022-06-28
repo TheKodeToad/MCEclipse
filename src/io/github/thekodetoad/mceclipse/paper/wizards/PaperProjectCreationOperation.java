@@ -79,6 +79,7 @@ public class PaperProjectCreationOperation extends MCProjectCreationOperation {
 		IPackageFragmentRoot root = jproject.getPackageFragmentRoot(result.project().getFolder(MAIN_JAVA));
 
 		String delimiter = "\n";
+		boolean comments = Util.shouldGenerateComments(jproject);
 		String packageName = null;
 		String className;
 		IPackageFragment frag;
@@ -104,29 +105,35 @@ public class PaperProjectCreationOperation extends MCProjectCreationOperation {
 		StringBuilder mainContent = new StringBuilder();
 
 		mainContent.append("\n");
-		mainContent
-				.append(Optional.ofNullable(CodeGeneration.getTypeComment(mainUnit, mainClass, delimiter)).orElse(""));
+		if(comments) {
+			mainContent
+					.append(Optional.ofNullable(CodeGeneration.getTypeComment(mainUnit, mainClass, delimiter)).orElse(""));
+		}
 		mainContent.append("public final class ");
 		mainContent.append(className);
 		mainContent.append(" extends ");
 		mainContent.append(imports.addImport("org.bukkit.plugin.java.JavaPlugin"));
 		mainContent.append("{\n\n");
-		mainContent.append(Optional.ofNullable(CodeGeneration.getMethodComment(mainUnit, mainClass, "onEnable",
-				new String[0], new String[0], "V",
-				new MethodImpl(Modifier.PUBLIC, new TypeImpl(Modifier.PUBLIC, "org.bukkit.plugin.java.JavaPlugin"),
-						"onEnable", new String[0], new String[0], new ITypeParameter[0], new ILocalVariable[0],
-						new String[0], new String[0], "V"),
-				delimiter)).orElse(""));
+		if(comments) {
+			mainContent.append(Optional.ofNullable(CodeGeneration.getMethodComment(mainUnit, mainClass, "onEnable",
+					new String[0], new String[0], "V",
+					new MethodImpl(Modifier.PUBLIC, new TypeImpl(Modifier.PUBLIC, "org.bukkit.plugin.java.JavaPlugin"),
+							"onEnable", new String[0], new String[0], new ITypeParameter[0], new ILocalVariable[0],
+							new String[0], new String[0], "V"),
+					delimiter)).orElse(""));
+		}
 		mainContent.append("\n@Override\n");
 		mainContent.append("public void onEnable() {\n");
 		mainContent.append("// TODO Plugin startup\n\n");
 		mainContent.append("}\n\n");
-		mainContent.append(Optional.ofNullable(CodeGeneration.getMethodComment(mainUnit, mainClass, "onDisable",
-				new String[0], new String[0], "V",
-				new MethodImpl(Modifier.PUBLIC, new TypeImpl(Modifier.PUBLIC, "org.bukkit.plugin.java.JavaPlugin"),
-						"onDisable", new String[0], new String[0], new ITypeParameter[0], new ILocalVariable[0],
-						new String[0], new String[0], "V"),
-				delimiter)).orElse(""));
+		if(comments) {
+			mainContent.append(Optional.ofNullable(CodeGeneration.getMethodComment(mainUnit, mainClass, "onDisable",
+					new String[0], new String[0], "V",
+					new MethodImpl(Modifier.PUBLIC, new TypeImpl(Modifier.PUBLIC, "org.bukkit.plugin.java.JavaPlugin"),
+							"onDisable", new String[0], new String[0], new ITypeParameter[0], new ILocalVariable[0],
+							new String[0], new String[0], "V"),
+					delimiter)).orElse(""));
+		}
 		mainContent.append("\n@Override\n");
 		mainContent.append("public void onDisable() {\n");
 		mainContent.append("// TODO Plugin shutdown\n\n");
@@ -136,8 +143,9 @@ public class PaperProjectCreationOperation extends MCProjectCreationOperation {
 		String mainContentStr = Util.applyImports(mainContent.toString(), imports);
 
 		StringBuilder header = new StringBuilder();
-		header.append(Optional.ofNullable(CodeGeneration.getFileComment(mainUnit, "\n")).orElse(""));
-		header.append("\n");
+		if(comments) {
+			header.append(Optional.ofNullable(CodeGeneration.getFileComment(mainUnit, "\n")).orElse(""));
+		}
 
 		if(packageName != null) {
 			header.append("package ");

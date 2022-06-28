@@ -2,13 +2,13 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="lib" path="libs/snakeyaml-1.30.jar" sourcepath="/tmp/.org.sf.feeling.decompiler1656254564044/source/snakeyaml-1.30-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/plexus-utils-3.4.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/plexus-utils-3.4.2.jar" sourcepath="/tmp/.org.sf.feeling.decompiler1656404485618/source/plexus-utils-3.4.2-sources.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-17">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="libs/maven-model-3.8.6.jar"/>
+	<classpathentry kind="lib" path="libs/maven-model-3.8.6.jar" sourcepath="/tmp/.org.sf.feeling.decompiler1656404485618/source/maven-model-3.8.6-sources.jar"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="lib" path="libs/lombok-1.18.24.jar"/>
 	<classpathentry kind="output" path="bin"/>

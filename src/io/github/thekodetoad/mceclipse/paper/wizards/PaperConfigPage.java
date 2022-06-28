@@ -19,7 +19,9 @@ package io.github.thekodetoad.mceclipse.paper.wizards;
 
 import java.util.function.Supplier;
 
+import org.apache.maven.model.Build;
 import org.apache.maven.model.Model;
+import org.apache.maven.model.Resource;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.layout.GridLayout;
@@ -198,12 +200,28 @@ public class PaperConfigPage extends MCWizardPage {
 
 	public Model createModel() {
 		Model model = new Model();
+
 		model.setModelVersion("4.0.0");
 		model.setGroupId(group);
 		model.setArtifactId(pluginName);
 		model.setVersion(version);
 		model.addDependency(PaperUtil.mavenDependency("1.19"));
 		model.addRepository(PaperUtil.MAVEN_REPO);
+
+		// TODO change version based on Minecraft version.
+		model.addProperty("maven.compiler.source", "17");
+		model.addProperty("maven.compiler.target", "17");
+
+		Build build = new Build();
+
+		Resource resources = new Resource();
+		resources.setDirectory("src/main/resources");
+		resources.setFiltering(true);
+		resources.addInclude("plugin.yml");
+
+		build.addResource(resources);
+		model.setBuild(build);
+
 		return model;
 	}
 

@@ -188,7 +188,7 @@ public class PaperProjectCreationOperation extends MCProjectCreationOperation {
 
 		Map<Object, Object> descMap = new LinkedHashMap<>();
 		descMap.put("name", model.getArtifactId());
-		descMap.put("version", model.getVersion());
+		descMap.put("version", "${project.version}");
 		descMap.put("main", mainClass);
 		descMap.put("api-version", "1.19");
 

@@ -38,7 +38,6 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkingSet;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.undo.CreateProjectOperation;
 import org.eclipse.ui.ide.undo.WorkspaceUndoUtil;
 
@@ -77,7 +76,7 @@ public class MCProjectCreationOperation implements IRunnableWithProgress {
 		desc = workspace.newProjectDescription(name);
 		desc.setComment(name);
 		desc.setLocation(useLocation ? location : null);
-		desc.setNatureIds(new String[] { JavaCore.NATURE_ID, Util.MAVEN_NATURE_ID });
+		desc.setNatureIds(getNatures());
 
 		ICommand javaCommand = desc.newCommand();
 		javaCommand.setBuilderName(JavaCore.BUILDER_ID);
@@ -92,6 +91,10 @@ public class MCProjectCreationOperation implements IRunnableWithProgress {
 		this.workingSets = workingSets;
 	}
 
+	protected String[] getNatures() {
+		return new String[] { JavaCore.NATURE_ID, Util.MAVEN_NATURE_ID };
+	}
+
 	@Override
 	public final void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 		CreateProjectOperation parentOperation = new CreateProjectOperation(desc, name);
@@ -101,7 +104,7 @@ public class MCProjectCreationOperation implements IRunnableWithProgress {
 			result = new Result(ResourcesPlugin.getWorkspace().getRoot().getProject(name), null);
 			result.project.setDescription(desc, monitor);
 			workbench.getWorkingSetManager().addToWorkingSets(result.project, workingSets);
-			
+
 			postCreate(monitor);
 		}
 		catch(ExecutionException | CoreException | IOException error) {

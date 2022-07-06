@@ -54,6 +54,7 @@ import org.yaml.snakeyaml.Yaml;
 
 import io.github.thekodetoad.mceclipse.MCEclipsePlugin;
 import io.github.thekodetoad.mceclipse.MCProjectCreationOperation;
+import io.github.thekodetoad.mceclipse.paper.PaperProjectNature;
 import io.github.thekodetoad.mceclipse.util.MethodImpl;
 import io.github.thekodetoad.mceclipse.util.TypeImpl;
 import io.github.thekodetoad.mceclipse.util.Util;
@@ -68,6 +69,11 @@ public class PaperProjectCreationOperation extends MCProjectCreationOperation {
 			Model model, Shell shell, String mainClass, IWorkingSet[] workingSets) {
 		super(workbench, useLocation, location, name, model, shell, workingSets);
 		this.mainClass = mainClass;
+	}
+
+	@Override
+	protected String[] getNatures() {
+		return new String[] { JavaCore.NATURE_ID, Util.MAVEN_NATURE_ID, PaperProjectNature.ID };
 	}
 
 	@Override

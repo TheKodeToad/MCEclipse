@@ -49,6 +49,8 @@ public class Participant extends CompilationParticipant {
 			Set<IMarker> addedMarkers = new HashSet<>();
 
 			if((context.getDelta().getFlags() & IJavaElementDelta.F_AST_AFFECTED) != 0) {
+				// TODO currently mostly just a proof of concept
+				// this should be reworked to have fixes, and split into classes
 				unit.accept(new ASTVisitor() {
 
 					@Override
@@ -65,6 +67,23 @@ public class Participant extends CompilationParticipant {
 								marker.setAttribute(IMarker.CHAR_END, node.getStartPosition() + node.getLength());
 								marker.setAttribute(IMarker.MESSAGE,
 										"IOException: The embedded resource 'config.yml' cannot be found.");
+								marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_NORMAL);
+								marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
+								addedMarkers.add(marker);
+							}
+							catch(CoreException error) {
+								MCEclipsePlugin.log().error("Could not add marker", error);
+							}
+						}
+						else if(node.toString().startsWith("System.out.") || node.toString().startsWith("System.err.")
+								|| node.toString().startsWith("System.in.")) {
+							try {
+								IMarker marker = resource.createMarker(IMarker.PROBLEM);
+								marker.setAttribute(IMarker.LINE_NUMBER, unit.getLineNumber(node.getStartPosition()));
+								marker.setAttribute(IMarker.CHAR_START, node.getStartPosition());
+								marker.setAttribute(IMarker.CHAR_END, node.getStartPosition() + node.getLength());
+								marker.setAttribute(IMarker.MESSAGE,
+										"Direct usage of standard IO is discouraged within plugins.");
 								marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_NORMAL);
 								marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
 								addedMarkers.add(marker);
@@ -103,7 +122,14 @@ public class Participant extends CompilationParticipant {
 
 	@Override
 	public boolean isActive(IJavaProject project) {
-		return true;
+		try {
+			return project.getProject().hasNature(PaperProjectNature.ID);
+		}
+		catch(CoreException error) {
+			MCEclipsePlugin.log().error("Could not determine state of nature", error);
+		}
+
+		return false;
 	}
 
 }

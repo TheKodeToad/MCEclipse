@@ -12,7 +12,7 @@
             category="io.github.thekodetoad.mceclipse.category"
             class="io.github.thekodetoad.mceclipse.paper.wizards.PaperPluginWizard"
             icon="icons/paper.png"
-            id="io.github.thekodetoad.mceclipse.wizards.paper_plugin"
+            id="io.github.thekodetoad.mceclipse.wizards.paperPlugin"
             name="Paper Plugin"
             project="true">
       </wizard>
@@ -24,6 +24,13 @@
           id="io.github.thekodetoad.mceclipse.paper.participant"
           createsProblems="true">
       </compilationParticipant>
+   </extension>
+   <extension
+         id="io.github.thekodetoad.mceclipse.paper.nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run class="io.github.thekodetoad.mceclipse.paper.PaperProjectNature"></run>
+      </runtime>
    </extension>
 
 </plugin>

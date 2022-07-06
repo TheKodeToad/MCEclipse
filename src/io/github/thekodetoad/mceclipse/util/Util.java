@@ -20,6 +20,7 @@ package io.github.thekodetoad.mceclipse.util;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
@@ -31,18 +32,23 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.ITypeRoot;
 import org.eclipse.jdt.core.ToolFactory;
 import org.eclipse.jdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.jdt.core.manipulation.JavaManipulation;
+import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.DumperOptions.FlowStyle;
 
+import io.github.thekodetoad.mceclipse.MCEclipsePlugin;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -52,9 +58,6 @@ public class Util {
 	public final String MAVEN_NATURE_ID = "org.eclipse.m2e.core.maven2Nature";
 	public final DumperOptions DUMPER_SETTINGS = new DumperOptions();
 	private final MavenXpp3Writer MAVEN_WRITER = new MavenXpp3Writer();
-	public final Bundle BUNDLE = FrameworkUtil.getBundle(Util.class);
-	public final String ID = BUNDLE.getSymbolicName();
-	public final ILog LOG = Platform.getLog(BUNDLE);
 
 	static {
 		DUMPER_SETTINGS.setDefaultFlowStyle(FlowStyle.BLOCK);
@@ -76,7 +79,7 @@ public class Util {
 			}
 		}
 		catch(BadLocationException error) {
-			Util.LOG.error("Error formatting", error);
+			MCEclipsePlugin.log().error("Error formatting", error);
 		}
 		return document.get();
 	}
@@ -87,7 +90,7 @@ public class Util {
 			imports.rewriteImports(null).apply(document);
 		}
 		catch(BadLocationException | MalformedTreeException error) {
-			Util.LOG.error("Error applying imports", error);
+			MCEclipsePlugin.log().error("Error applying imports", error);
 		}
 		return document.get();
 	}
@@ -110,6 +113,12 @@ public class Util {
 
 	public static boolean shouldGenerateComments(IJavaProject jproject) {
 		return Boolean.parseBoolean(JavaManipulation.getPreference("org.eclipse.jdt.ui.javadoc", jproject));
+	}
+
+	public static ITypeRoot getJavaType(IEditorPart editor) {
+		IEditorInput input = editor.getEditorInput();
+		return Optional.<ITypeRoot>ofNullable(JavaUI.getWorkingCopyManager().getWorkingCopy(input))
+				.orElseGet(() -> input.getAdapter(ITypeRoot.class));
 	}
 
 }

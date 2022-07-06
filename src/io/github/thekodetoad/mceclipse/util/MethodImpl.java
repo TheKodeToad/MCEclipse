@@ -37,12 +37,24 @@ import org.eclipse.jdt.core.ITypeParameter;
 import org.eclipse.jdt.core.ITypeRoot;
 import org.eclipse.jdt.core.JavaModelException;
 
+import lombok.Data;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-public record MethodImpl(@Getter int flags, @Getter IType declaringType, String name, String[] exceptions,
-		String[] typeParamSignatures, ITypeParameter[] typeParams, @Getter ILocalVariable[] parameters,
-		@Getter String[] parameterNames, @Getter String[] parameterTypes, @Getter String returnType)
-		implements IMethod {
+@Data
+@RequiredArgsConstructor
+public class MethodImpl implements IMethod {
+
+	private final int flags;
+	private final IType declaringType;
+	private final String name;
+	private final String[] exceptions;
+	private final String[] typeParamSignatures;
+	private final ITypeParameter[] typeParams;
+	private final ILocalVariable[] parameters;
+	private final String[] parameterNames;
+	private final String[] parameterTypes;
+	private final String returnType;
 
 	@Override
 	public String[] getCategories() throws JavaModelException {

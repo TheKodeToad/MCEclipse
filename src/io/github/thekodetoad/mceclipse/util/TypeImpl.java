@@ -45,10 +45,16 @@ import org.eclipse.jdt.core.IWorkingCopy;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.WorkingCopyOwner;
 
-import lombok.Getter;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
+@Data
+@RequiredArgsConstructor
 @SuppressWarnings("deprecation")
-public record TypeImpl(@Getter int flags, String name) implements IType {
+public class TypeImpl implements IType {
+
+	private final int flags;
+	private final String name;
 
 	@Override
 	public String[] getCategories() throws JavaModelException {
@@ -273,14 +279,12 @@ public record TypeImpl(@Getter int flags, String name) implements IType {
 	@Override
 	public IInitializer createInitializer(String contents, IJavaElement sibling, IProgressMonitor monitor)
 			throws JavaModelException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public IMethod createMethod(String contents, IJavaElement sibling, boolean force, IProgressMonitor monitor)
 			throws JavaModelException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -376,7 +380,6 @@ public record TypeImpl(@Getter int flags, String name) implements IType {
 
 	@Override
 	public String[] getSuperInterfaceTypeSignatures() throws JavaModelException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -407,7 +410,6 @@ public record TypeImpl(@Getter int flags, String name) implements IType {
 
 	@Override
 	public ITypeParameter getTypeParameter(String name) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

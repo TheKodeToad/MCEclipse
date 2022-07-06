@@ -42,6 +42,9 @@ import org.eclipse.ui.ide.undo.CreateProjectOperation;
 import org.eclipse.ui.ide.undo.WorkspaceUndoUtil;
 
 import io.github.thekodetoad.mceclipse.util.Util;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.Accessors;
 
 // based off https://github.com/JetBrains/kotlin-eclipse/blob/master/kotlin-eclipse-ui/src/org/jetbrains/kotlin/wizards/ProjectCreationOp.java
 public class MCProjectCreationOperation implements IRunnableWithProgress {
@@ -89,9 +92,10 @@ public class MCProjectCreationOperation implements IRunnableWithProgress {
 	public final void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 		CreateProjectOperation parentOperation = new CreateProjectOperation(desc, name);
 		try {
-			PlatformUI.getWorkbench().getOperationSupport().getOperationHistory().execute(parentOperation, monitor, WorkspaceUndoUtil.getUIInfoAdapter(shell));
+			workbench.getOperationSupport().getOperationHistory().execute(parentOperation, monitor, WorkspaceUndoUtil.getUIInfoAdapter(shell));
 			result = new Result(ResourcesPlugin.getWorkspace().getRoot().getProject(name), null);
 			result.project.setDescription(desc, monitor);
+
 
 			postCreate(monitor);
 		}
@@ -121,7 +125,14 @@ public class MCProjectCreationOperation implements IRunnableWithProgress {
 		if(!folder.exists()) folder.create(false, true, monitor);
 	}
 
-	public record Result(IProject project, Throwable error) {
+	@Data
+	@Accessors(fluent = true)
+	@RequiredArgsConstructor
+	public class Result {
+
+		private final IProject project;
+		private final Throwable error;
+
 	}
 
 }

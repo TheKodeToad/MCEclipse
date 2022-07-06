@@ -51,6 +51,7 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 import org.yaml.snakeyaml.Yaml;
 
+import io.github.thekodetoad.mceclipse.MCEclipsePlugin;
 import io.github.thekodetoad.mceclipse.MCProjectCreationOperation;
 import io.github.thekodetoad.mceclipse.util.MethodImpl;
 import io.github.thekodetoad.mceclipse.util.TypeImpl;
@@ -174,7 +175,7 @@ public class PaperProjectCreationOperation extends MCProjectCreationOperation {
 							result.project().getFile(mainUnit.getResource().getProjectRelativePath()), true);
 				}
 				catch(PartInitException error) {
-					Util.LOG.error("Could not open editor", error);
+					MCEclipsePlugin.log().error("Could not open editor", error);
 				}
 				BasicNewResourceWizard.selectAndReveal(mainUnit.getResource(), workbench.getActiveWorkbenchWindow());
 			});

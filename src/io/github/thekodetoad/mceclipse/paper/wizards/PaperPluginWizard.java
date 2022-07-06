@@ -29,7 +29,9 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 
+import io.github.thekodetoad.mceclipse.MCEclipsePlugin;
 import io.github.thekodetoad.mceclipse.util.Util;
+import lombok.Cleanup;
 
 public class PaperPluginWizard extends Wizard implements IWorkbenchWizard {
 
@@ -78,7 +80,7 @@ public class PaperPluginWizard extends Wizard implements IWorkbenchWizard {
 			getContainer().run(true, true, operation);
 		}
 		catch(InvocationTargetException | InterruptedException error) {
-			Util.LOG.error("Could not create Paper plugin", error);
+			MCEclipsePlugin.log().error("Could not create Paper plugin", error);
 		}
 		return true;
 	}

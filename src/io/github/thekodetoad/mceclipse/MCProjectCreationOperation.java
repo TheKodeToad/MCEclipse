@@ -37,6 +37,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.undo.CreateProjectOperation;
 import org.eclipse.ui.ide.undo.WorkspaceUndoUtil;
@@ -65,8 +66,10 @@ public class MCProjectCreationOperation implements IRunnableWithProgress {
 	protected final Model model;
 	protected final Shell shell;
 	protected Result result;
+	private IWorkingSet[] workingSets;
 
-	public MCProjectCreationOperation(IWorkbench workbench, boolean useLocation, IPath location, String name, Model model, Shell shell) {
+	public MCProjectCreationOperation(IWorkbench workbench, boolean useLocation, IPath location, String name,
+			Model model, Shell shell, IWorkingSet[] workingSets) {
 		this.workbench = workbench;
 
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -86,17 +89,19 @@ public class MCProjectCreationOperation implements IRunnableWithProgress {
 		this.name = name;
 		this.model = model;
 		this.shell = new Shell();
+		this.workingSets = workingSets;
 	}
 
 	@Override
 	public final void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 		CreateProjectOperation parentOperation = new CreateProjectOperation(desc, name);
 		try {
-			workbench.getOperationSupport().getOperationHistory().execute(parentOperation, monitor, WorkspaceUndoUtil.getUIInfoAdapter(shell));
+			workbench.getOperationSupport().getOperationHistory().execute(parentOperation, monitor,
+					WorkspaceUndoUtil.getUIInfoAdapter(shell));
 			result = new Result(ResourcesPlugin.getWorkspace().getRoot().getProject(name), null);
 			result.project.setDescription(desc, monitor);
-
-
+			workbench.getWorkingSetManager().addToWorkingSets(result.project, workingSets);
+			
 			postCreate(monitor);
 		}
 		catch(ExecutionException | CoreException | IOException error) {

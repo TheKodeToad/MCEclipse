@@ -75,7 +75,8 @@ public class PaperPluginWizard extends Wizard implements IWorkbenchWizard {
 	@Override
 	public boolean performFinish() {
 		IRunnableWithProgress operation = new PaperProjectCreationOperation(workbench, !projectPage.useDefaults(),
-				projectPage.getLocationPath(), projectPage.getProjectName(), paperPage.createModel(), getShell(), paperPage.getMainClass());
+				projectPage.getLocationPath(), projectPage.getProjectName(), paperPage.createModel(), getShell(),
+				paperPage.getMainClass(), projectPage.getSelectedWorkingSets());
 		try {
 			getContainer().run(true, true, operation);
 		}

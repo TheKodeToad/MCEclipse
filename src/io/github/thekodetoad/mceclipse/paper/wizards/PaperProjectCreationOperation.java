@@ -45,6 +45,7 @@ import org.eclipse.jdt.core.manipulation.CodeGeneration;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
@@ -63,8 +64,9 @@ public class PaperProjectCreationOperation extends MCProjectCreationOperation {
 
 	private String mainClass;
 
-	public PaperProjectCreationOperation(IWorkbench workbench, boolean useLocation, IPath location, String name, Model model, Shell shell, String mainClass) {
-		super(workbench, useLocation, location, name, model, shell);
+	public PaperProjectCreationOperation(IWorkbench workbench, boolean useLocation, IPath location, String name,
+			Model model, Shell shell, String mainClass, IWorkingSet[] workingSets) {
+		super(workbench, useLocation, location, name, model, shell, workingSets);
 		this.mainClass = mainClass;
 	}
 

@@ -20,8 +20,8 @@
    <extension
          point="org.eclipse.jdt.core.compilationParticipant">
       <compilationParticipant
-          class="io.github.thekodetoad.mceclipse.paper.Participant"
-          id="io.github.thekodetoad.mceclipse.paper.participant"
+          class="io.github.thekodetoad.mceclipse.paper.compile.PaperCompilationParticipant"
+          id="io.github.thekodetoad.mceclipse.paper.compile.compilationParticipant"
           createsProblems="true">
       </compilationParticipant>
    </extension>
